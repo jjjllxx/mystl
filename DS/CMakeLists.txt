@@ -1,0 +1,3 @@
+list(APPEND DSA_TEST_CPPS
+${CMAKE_CURRENT_LIST_DIR}/Vector_Test.cpp
+)
