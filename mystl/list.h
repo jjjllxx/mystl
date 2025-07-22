@@ -4,33 +4,33 @@
 #include <initializer_list>
 #include <stdexcept>
 
-namespace dsa
+namespace mystl
 {
 template<typename T>
-struct ListNode
+struct list_node
 {
     T val;
 
-    dsa::ListNode<T>* next;
+    mystl::list_node<T>* next;
 };
 
 template<typename T>
-class LinkedList
+class list
 {
     std::size_t sz;
 
-    dsa::ListNode<T>* head;
-    dsa::ListNode<T>* tail;
+    mystl::list_node<T>* head;
+    mystl::list_node<T>* tail;
 
-    dsa::ListNode<T>* find_node(const std::size_t idx) const
+    mystl::list_node<T>* find_node(const std::size_t idx) const
     {
         {
             if (idx >= this->sz)
             {
-                throw std::out_of_range("Index out of range in LinkedList::find_node()");
+                throw std::out_of_range("Index out of range in list::find_node()");
             }
 
-            dsa::ListNode<T>* node = this->head;
+            mystl::list_node<T>* node = this->head;
 
             for (std::size_t i = 0; i < idx; ++i)
             {
@@ -42,20 +42,20 @@ class LinkedList
     }
 
 public:
-    LinkedList() :
+    list() :
         sz(0),
         head(nullptr),
         tail(nullptr)
     {
     }
 
-    LinkedList(const std::initializer_list<T>& items) :
+    list(const std::initializer_list<T>& items) :
         sz(items.size())
     {
-        dsa::ListNode<T>* pre = nullptr;
+        mystl::list_node<T>* pre = nullptr;
         for (std::size_t idx = 0; idx < items.size(); ++idx)
         {
-            dsa::ListNode<T>* node = new dsa::ListNode<T>;
+            mystl::list_node<T>* node = new mystl::list_node<T>;
             node->val              = *(items.begin() + idx);
             node->next             = nullptr;
 
@@ -77,10 +77,10 @@ public:
         }
     }
 
-    ~LinkedList()
+    ~list()
     {
-        dsa::ListNode<T>* cur = this->head;
-        dsa::ListNode<T>* nxt = nullptr;
+        mystl::list_node<T>* cur = this->head;
+        mystl::list_node<T>* nxt = nullptr;
         while (cur != nullptr)
         {
             nxt = cur->next;
@@ -101,32 +101,32 @@ public:
 
     const T& at(const std::size_t idx) const
     {
-        return dsa::LinkedList<T>::find_node(idx)->val;
+        return mystl::list<T>::find_node(idx)->val;
     }
 
     T& at(const std::size_t idx)
     {
-        return dsa::LinkedList<T>::find_node(idx)->val;
+        return mystl::list<T>::find_node(idx)->val;
     }
 
     const T& value_n_from_end(const std::size_t idx) const
     {
         if (idx >= this->sz)
         {
-            throw std::out_of_range("Index out of range in LinkedList::value_n_from_end()");
+            throw std::out_of_range("Index out of range in list::value_n_from_end()");
         }
 
-        return dsa::LinkedList<T>::at(this->sz - idx - 1);
+        return mystl::list<T>::at(this->sz - idx - 1);
     }
 
     void push_front(const T& val)
     {
-        dsa::ListNode<T>* newHead = new ListNode<T>;
+        mystl::list_node<T>* newHead = new list_node<T>;
         newHead->val              = val;
         newHead->next             = this->head;
         this->head                = newHead;
 
-        if (dsa::LinkedList<T>::empty() == true)
+        if (mystl::list<T>::empty() == true)
         {
             this->tail = this->head;
         }
@@ -136,13 +136,13 @@ public:
 
     T pop_front()
     {
-        if (dsa::LinkedList<T>::empty() == true)
+        if (mystl::list<T>::empty() == true)
         {
             throw std::out_of_range("pop_front() called on empty linked list");
         }
 
         const T           front   = this->head->val;
-        dsa::ListNode<T>* preHead = this->head;
+        mystl::list_node<T>* preHead = this->head;
         this->head                = this->head->next;
 
         if (this->sz == 1)
@@ -158,13 +158,13 @@ public:
 
     void push_back(const T& val)
     {
-        if (dsa::LinkedList<T>::empty() == true)
+        if (mystl::list<T>::empty() == true)
         {
-            dsa::LinkedList<T>::push_front(val);
+            mystl::list<T>::push_front(val);
         }
         else
         {
-            dsa::ListNode<T>* newTail = new ListNode<T>;
+            mystl::list_node<T>* newTail = new list_node<T>;
             newTail->val              = val;
             newTail->next             = nullptr;
 
@@ -176,17 +176,17 @@ public:
 
     T pop_back()
     {
-        if (dsa::LinkedList<T>::empty() == true)
+        if (mystl::list<T>::empty() == true)
         {
             throw std::out_of_range("pop_back() called on empty linked list");
         }
 
         if (this->sz == 1)
         {
-            return dsa::LinkedList<T>::pop_front();
+            return mystl::list<T>::pop_front();
         }
 
-        dsa::ListNode<T>* node = dsa::LinkedList<T>::find_node(dsa::LinkedList<T>::size() - 2);
+        mystl::list_node<T>* node = mystl::list<T>::find_node(mystl::list<T>::size() - 2);
 
         node->next   = nullptr;
         const T back = this->head->val;
@@ -199,7 +199,7 @@ public:
 
     const T& front() const
     {
-        if (dsa::LinkedList<T>::empty() == true)
+        if (mystl::list<T>::empty() == true)
         {
             throw std::out_of_range("front() called on empty linked list");
         }
@@ -209,7 +209,7 @@ public:
 
     const T& back() const
     {
-        if (dsa::LinkedList<T>::empty() == true)
+        if (mystl::list<T>::empty() == true)
         {
             throw std::out_of_range("back() called on empty linked list");
         }
@@ -222,21 +222,21 @@ public:
     {
         if (idx > this->sz)
         {
-            throw std::out_of_range("Index out of range in LinkedList::insert()");
+            throw std::out_of_range("Index out of range in list::insert()");
         }
 
         if (idx == 0)
         {
-            return dsa::LinkedList<T>::push_front(val);
+            return mystl::list<T>::push_front(val);
         }
 
         if (idx == this->sz)
         {
-            return dsa::LinkedList<T>::push_back(val);
+            return mystl::list<T>::push_back(val);
         }
 
-        dsa::ListNode<T>* preNode = dsa::LinkedList<T>::find_node(idx - 1);
-        dsa::ListNode<T>* newNode = new ListNode<T>;
+        mystl::list_node<T>* preNode = mystl::list<T>::find_node(idx - 1);
+        mystl::list_node<T>* newNode = new list_node<T>;
         newNode->val              = val;
         newNode->next             = preNode->next;
         preNode->next             = newNode;
@@ -247,21 +247,21 @@ public:
     {
         if (idx >= this->sz)
         {
-            throw std::out_of_range("Index out of range in LinkedList::erase()");
+            throw std::out_of_range("Index out of range in list::erase()");
         }
 
         if (idx == 0)
         {
-            dsa::LinkedList<T>::pop_front();
+            mystl::list<T>::pop_front();
         }
         else if (idx == this->sz - 1)
         {
-            dsa::LinkedList<T>::pop_back();
+            mystl::list<T>::pop_back();
         }
         else
         {
-            dsa::ListNode<T>* preNode = dsa::LinkedList<T>::find_node(idx - 1);
-            dsa::ListNode<T>* curNode = preNode->next;
+            mystl::list_node<T>* preNode = mystl::list<T>::find_node(idx - 1);
+            mystl::list_node<T>* curNode = preNode->next;
             preNode->next             = curNode->next;
             delete curNode;
             this->sz--;
@@ -272,16 +272,16 @@ public:
     {
         while (this->head != nullptr && this->head->val == val)
         {
-            dsa::LinkedList<T>::pop_front();
+            mystl::list<T>::pop_front();
         }
 
-        if (dsa::LinkedList<T>::empty() == true)
+        if (mystl::list<T>::empty() == true)
         {
             return;
         }
 
-        dsa::ListNode<T>* pre = this->head;
-        dsa::ListNode<T>* cur = this->head->next;
+        mystl::list_node<T>* pre = this->head;
+        mystl::list_node<T>* cur = this->head->next;
 
         while (cur != nullptr)
         {
@@ -304,11 +304,11 @@ public:
 
     void reverse()
     {
-        if (dsa::LinkedList<T>::empty() == false)
+        if (mystl::list<T>::empty() == false)
         {
-            dsa::ListNode<T>* pre = nullptr;
-            dsa::ListNode<T>* cur = this->head;
-            dsa::ListNode<T>* nxt = this->head->next;
+            mystl::list_node<T>* pre = nullptr;
+            mystl::list_node<T>* cur = this->head;
+            mystl::list_node<T>* nxt = this->head->next;
             while (cur != nullptr)
             {
                 nxt       = cur->next;
@@ -322,4 +322,4 @@ public:
         }
     }
 };
-} // namespace dsa
+} // namespace mystl

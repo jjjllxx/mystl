@@ -1,15 +1,15 @@
 #pragma once
 
-#include "DS/Array.h"
-#include "DS/String.h"
+#include "array.h"
+#include "string.h"
 #include <algorithm>
 #include <cstddef>
 #include <stdexcept>
 
-namespace dsa
+namespace mystl
 {
 template<std::size_t N>
-class Bitset
+class bitset
 {
     static constexpr std::size_t BITS_PER_WORD  = sizeof(std::size_t) * 8;
     static constexpr std::size_t WORD_COUNT     = (N + BITS_PER_WORD - 1) / BITS_PER_WORD;
@@ -28,8 +28,8 @@ class Bitset
     void modify_by_idx(const bool        toOne,
                        const std::size_t idx)
     {
-        const std::size_t wi = dsa::Bitset<N>::word_index(idx);
-        const std::size_t bi = dsa::Bitset<N>::bit_index(idx);
+        const std::size_t wi = mystl::bitset<N>::word_index(idx);
+        const std::size_t bi = mystl::bitset<N>::bit_index(idx);
 
         toOne == true
             ? this->data[wi] |= (1ULL << bi)
@@ -44,14 +44,14 @@ class Bitset
         }
     }
 
-    dsa::Array<std::size_t, WORD_COUNT> data;
+    mystl::array<std::size_t, WORD_COUNT> data;
 
 public:
-    Bitset()
+    bitset()
     {
     }
 
-    Bitset(const unsigned long long val)
+    bitset(const unsigned long long val)
     {
         for (std::size_t idx = 0; idx < WORD_COUNT; ++idx)
         {
@@ -61,25 +61,25 @@ public:
         this->data[0] = val;
     }
 
-    Bitset(const dsa::String& str,
-           const std::size_t  pos  = 0,
-           const std::size_t  n    = dsa::String::npos,
-           const char         zero = '0',
-           const char         one  = '1')
+    bitset(const mystl::string& str,
+           const std::size_t    pos  = 0,
+           const std::size_t    n    = mystl::string::npos,
+           const char           zero = '0',
+           const char           one  = '1')
     {
         if (pos > str.size())
         {
-            throw std::out_of_range("Bitset constructor: pos out of range");
+            throw std::out_of_range("bitset constructor: pos out of range");
         }
 
         std::size_t bitsCnt = 0;
-        if (n == dsa::String::npos)
+        if (n == mystl::string::npos)
         {
             bitsCnt = str.size() - pos;
         }
         else if (pos + n > str.size())
         {
-            throw std::out_of_range("Bitset constructor: pos + n out of range");
+            throw std::out_of_range("bitset constructor: pos + n out of range");
         }
         else
         {
@@ -101,7 +101,7 @@ public:
             }
             else if (str[idx + pos] != zero)
             {
-                throw std::invalid_argument("Bitset string contains invalid character");
+                throw std::invalid_argument("bitset string contains invalid character");
             }
         }
     }
@@ -149,8 +149,8 @@ public:
 
     bool test(const std::size_t idx) const
     {
-        const std::size_t wi = dsa::Bitset<N>::word_index(idx);
-        const std::size_t bi = dsa::Bitset<N>::bit_index(idx);
+        const std::size_t wi = mystl::bitset<N>::word_index(idx);
+        const std::size_t bi = mystl::bitset<N>::bit_index(idx);
 
         return (this->data[wi] & (1ULL << bi)) != 0;
     }
@@ -170,7 +170,7 @@ public:
 
     bool none() const
     {
-        return !dsa::Bitset<N>::any();
+        return !mystl::bitset<N>::any();
     }
 
     bool all() const
@@ -194,15 +194,15 @@ public:
 
     bool operator[](const std::size_t idx) const
     {
-        return dsa::Bitset<N>::test(idx);
+        return mystl::bitset<N>::test(idx);
     }
 
-    bool operator==(const dsa::Bitset<N>& other) const
+    bool operator==(const mystl::bitset<N>& other) const
     {
         return !(*this != other);
     }
 
-    bool operator!=(const dsa::Bitset<N>& other) const
+    bool operator!=(const mystl::bitset<N>& other) const
     {
         for (std::size_t i = 0; i < WORD_COUNT; ++i)
         {
@@ -244,7 +244,7 @@ public:
             {
                 if (this->data[idx] != 0)
                 {
-                    throw std::overflow_error("Bitset too large for to_uulong()");
+                    throw std::overflow_error("bitset too large for to_uulong()");
                 }
             }
         }
@@ -252,13 +252,13 @@ public:
         return static_cast<unsigned long long>(this->data[0]);
     }
 
-    dsa::String to_string() const
+    mystl::string to_string() const
     {
-        dsa::String res;
+        mystl::string res;
         res.reserve(N);
         for (std::size_t idx = 0; idx < N; ++idx)
         {
-            dsa::Bitset<N>::test(N - idx - 1) == true
+            mystl::bitset<N>::test(N - idx - 1) == true
                 ? res.push_back('1')
                 : res.push_back('0');
         }
@@ -266,9 +266,9 @@ public:
         return res;
     }
 
-    dsa::Bitset<N> operator&(const dsa::Bitset<N>& other) const
+    mystl::bitset<N> operator&(const mystl::bitset<N>& other) const
     {
-        dsa::Bitset<N> res;
+        mystl::bitset<N> res;
         for (std::size_t i = 0; i < WORD_COUNT; ++i)
         {
             res.data[i] = this->data[i] & other.data[i];
@@ -277,9 +277,9 @@ public:
         return res;
     }
 
-    dsa::Bitset<N> operator|(const dsa::Bitset<N>& other) const
+    mystl::bitset<N> operator|(const mystl::bitset<N>& other) const
     {
-        dsa::Bitset<N> res;
+        mystl::bitset<N> res;
         for (std::size_t i = 0; i < WORD_COUNT; ++i)
         {
             res.data[i] = this->data[i] | other.data[i];
@@ -288,9 +288,9 @@ public:
         return res;
     }
 
-    dsa::Bitset<N> operator^(const dsa::Bitset<N>& other) const
+    mystl::bitset<N> operator^(const mystl::bitset<N>& other) const
     {
-        dsa::Bitset<N> res;
+        mystl::bitset<N> res;
         for (std::size_t i = 0; i < WORD_COUNT; ++i)
         {
             res.data[i] = this->data[i] ^ other.data[i];
@@ -299,9 +299,9 @@ public:
         return res;
     }
 
-    dsa::Bitset<N> operator~() const
+    mystl::bitset<N> operator~() const
     {
-        dsa::Bitset<N> res;
+        mystl::bitset<N> res;
         for (std::size_t i = 0; i < WORD_COUNT; ++i)
         {
             res.data[i] = ~this->data[i];
@@ -311,9 +311,9 @@ public:
         return res;
     }
 
-    dsa::Bitset<N> operator<<(const std::size_t bitsNum) const
+    mystl::bitset<N> operator<<(const std::size_t bitsNum) const
     {
-        dsa::Bitset<N> res;
+        mystl::bitset<N> res;
 
         std::size_t curVal = 0;
         std::size_t preVal = 0;
@@ -330,9 +330,9 @@ public:
         return res;
     }
 
-    dsa::Bitset<N> operator>>(const std::size_t bitsNum) const
+    mystl::bitset<N> operator>>(const std::size_t bitsNum) const
     {
-        dsa::Bitset<N> res;
+        mystl::bitset<N> res;
 
         std::size_t curVal = 0;
         std::size_t preVal = 0;
@@ -353,4 +353,4 @@ public:
         return res;
     }
 };
-} // namespace dsa
+} // namespace mystl

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Utility/Iterator.h"
-namespace dsa
+#include "iterator.h"
+namespace mystl
 {
-template<class InputIt, class T = typename dsa::IteratorTraits<InputIt>::ValueType>
-typename dsa::IteratorTraits<InputIt>::DifferenceType
+template<class InputIt, class T = typename mystl::IteratorTraits<InputIt>::ValueType>
+typename mystl::IteratorTraits<InputIt>::DifferenceType
     count(InputIt first, InputIt last, const T& val)
 {
-    typename dsa::IteratorTraits<InputIt>::DifferenceType cnt = 0;
+    typename mystl::IteratorTraits<InputIt>::DifferenceType cnt = 0;
 
     for (; first != last; ++first)
     {
@@ -20,11 +20,11 @@ typename dsa::IteratorTraits<InputIt>::DifferenceType
     return cnt;
 }
 
-template<class InputIt, class T = typename dsa::IteratorTraits<InputIt>::ValueType, class UnaryPred>
-typename dsa::IteratorTraits<InputIt>::DifferenceType
+template<class InputIt, class T = typename mystl::IteratorTraits<InputIt>::ValueType, class UnaryPred>
+typename mystl::IteratorTraits<InputIt>::DifferenceType
     count_if(InputIt first, InputIt last, UnaryPred p)
 {
-    typename dsa::IteratorTraits<InputIt>::DifferenceType cnt = 0;
+    typename mystl::IteratorTraits<InputIt>::DifferenceType cnt = 0;
 
     for (; first != last; ++first)
     {
@@ -65,7 +65,7 @@ bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPred p)
     return true;
 }
 
-template<class InputIt, class T = typename dsa::IteratorTraits<InputIt>::ValueType>
+template<class InputIt, class T = typename mystl::IteratorTraits<InputIt>::ValueType>
 constexpr InputIt find(InputIt first, InputIt last, const T& val)
 {
     for (; first != last; ++first)
@@ -144,4 +144,4 @@ bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, I
 
     return first1 == last1 && first2 != last2;
 }
-} // namespace dsa
+} // namespace mystl

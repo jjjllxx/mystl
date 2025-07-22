@@ -1,17 +1,17 @@
-#include "Queue.h"
+#include "mystl/queue.h"
 #include <gtest/gtest.h>
 #include <stdexcept>
 
 GTEST_TEST(DS_Queue, q_empty_true)
 {
-    dsa::Queue<int> q;
+    mystl::queue<int> q;
 
     EXPECT_TRUE(q.empty());
 }
 
 GTEST_TEST(DS_Queue, q_empty_false)
 {
-    dsa::Queue<int> q;
+    mystl::queue<int> q;
     q.enqueue(2);
 
     EXPECT_FALSE(q.empty());
@@ -19,7 +19,7 @@ GTEST_TEST(DS_Queue, q_empty_false)
 
 GTEST_TEST(DS_Queue, q_enqueue)
 {
-    dsa::Queue<int> q;
+    mystl::queue<int> q;
     q.enqueue(2);
 
     EXPECT_EQ(q.dequeue(),2);
@@ -27,7 +27,7 @@ GTEST_TEST(DS_Queue, q_enqueue)
 
 GTEST_TEST(DS_Queue, q_dequeue)
 {
-    dsa::Queue<int> q;
+    mystl::queue<int> q;
     q.enqueue(2);
 
     EXPECT_EQ(q.dequeue(), 2);
@@ -36,14 +36,14 @@ GTEST_TEST(DS_Queue, q_dequeue)
 
 GTEST_TEST(DS_Queue, q_dequeue_out_of_range)
 {
-    dsa::Queue<int> q;
+    mystl::queue<int> q;
 
     EXPECT_THROW(q.dequeue(), std::out_of_range);
 }
 
 GTEST_TEST(DS_Queue, q_size)
 {
-    dsa::Queue<int> q;
+    mystl::queue<int> q;
     EXPECT_EQ(q.size(), 0);
     q.enqueue(2);
     q.enqueue(5);
@@ -54,14 +54,14 @@ GTEST_TEST(DS_Queue, q_size)
 
 GTEST_TEST(DS_Queue, fsq_empty_true)
 {
-    dsa::FixedSizeQueue<int> fsq { 4 };
+    mystl::FixedSizeQueue<int> fsq { 4 };
 
     EXPECT_TRUE(fsq.empty());
 }
 
 GTEST_TEST(DS_Queue, fsq_empty_false)
 {
-    dsa::FixedSizeQueue<int> fsq{4};
+    mystl::FixedSizeQueue<int> fsq { 4 };
     fsq.enqueue(2);
 
     EXPECT_FALSE(fsq.empty());
@@ -69,7 +69,7 @@ GTEST_TEST(DS_Queue, fsq_empty_false)
 
 GTEST_TEST(DS_Queue, fsq_full_true)
 {
-    dsa::FixedSizeQueue<int> fsq { 4 };
+    mystl::FixedSizeQueue<int> fsq { 4 };
     fsq.enqueue(2);
     fsq.enqueue(5);
     fsq.enqueue(3);
@@ -80,7 +80,7 @@ GTEST_TEST(DS_Queue, fsq_full_true)
 
 GTEST_TEST(DS_Queue, fsq_full_false)
 {
-    dsa::FixedSizeQueue<int> fsq { 4 };
+    mystl::FixedSizeQueue<int> fsq { 4 };
     fsq.enqueue(2);
 
     EXPECT_FALSE(fsq.full());
@@ -88,7 +88,7 @@ GTEST_TEST(DS_Queue, fsq_full_false)
 
 GTEST_TEST(DS_Queue, fsq_enqueue)
 {
-    dsa::FixedSizeQueue<int> fsq{4};
+    mystl::FixedSizeQueue<int> fsq { 4 };
     fsq.enqueue(2);
 
     EXPECT_EQ(fsq.dequeue(), 2);
@@ -96,7 +96,7 @@ GTEST_TEST(DS_Queue, fsq_enqueue)
 
 GTEST_TEST(DS_Queue, fsq_enqueue_overflow)
 {
-    dsa::FixedSizeQueue<int> fsq { 4 };
+    mystl::FixedSizeQueue<int> fsq { 4 };
     fsq.enqueue(2);
     fsq.enqueue(5);
     fsq.enqueue(3);
@@ -106,7 +106,7 @@ GTEST_TEST(DS_Queue, fsq_enqueue_overflow)
 
 GTEST_TEST(DS_Queue, fsq_dequeue)
 {
-    dsa::FixedSizeQueue<int> fsq { 4 };
+    mystl::FixedSizeQueue<int> fsq { 4 };
     fsq.enqueue(2);
 
     EXPECT_EQ(fsq.dequeue(), 2);
@@ -115,7 +115,7 @@ GTEST_TEST(DS_Queue, fsq_dequeue)
 
 GTEST_TEST(DS_Queue, fsq_dequeue_out_of_range)
 {
-    dsa::FixedSizeQueue<int> q { 4 };
+    mystl::FixedSizeQueue<int> q { 4 };
 
     EXPECT_THROW(q.dequeue(), std::out_of_range);
 }

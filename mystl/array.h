@@ -1,27 +1,28 @@
 #pragma once
 
+#include <algorithm>
 #include <cstddef>
 #include <initializer_list>
 #include <stdexcept>
 
-namespace dsa
+namespace mystl
 {
 template<typename T, std::size_t N>
-class Array
+class array
 {
     T* data;
 
 public:
-    Array()
+    array()
     {
         this->data = new T[N]();
     }
 
-    Array(const std::initializer_list<T>& list)
+    array(const std::initializer_list<T>& list)
     {
         if (list.size() > N)
         {
-            throw std::overflow_error("too many initializers for dsa::array");
+            throw std::overflow_error("too many initializers for mystl::array");
         }
 
         this->data      = new T[N]();
@@ -37,14 +38,14 @@ public:
         }
     }
 
-    Array(const dsa::Array<T, N>& other)
+    array(const mystl::array<T, N>& other)
     {
         this->data = new T[N];
 
         std::copy(other.data, other.data + N, this->data);
     }
 
-    Array<T, N>& operator=(const dsa::Array<T, N>& other)
+    array<T, N>& operator=(const mystl::array<T, N>& other)
     {
         if (this != &other)
         {
@@ -57,13 +58,13 @@ public:
         return *this;
     }
 
-    Array(dsa::Array<T, N>&& other) noexcept
+    array(mystl::array<T, N>&& other) noexcept
     {
         this->data = other.data;
         other.data = nullptr;
     }
 
-    Array<T, N>& operator=(dsa::Array<T, N>&& other) noexcept
+    array<T, N>& operator=(mystl::array<T, N>&& other) noexcept
     {
         if (this != &other)
         {
@@ -75,7 +76,7 @@ public:
         return *this;
     }
 
-    ~Array()
+    ~array()
     {
         delete[] this->data;
     }
@@ -104,7 +105,7 @@ public:
     {
         if (idx >= N)
         {
-            throw std::out_of_range("Index out of range in Array::at()");
+            throw std::out_of_range("Index out of range in array::at()");
         }
 
         return *(this->data + idx);
@@ -114,7 +115,7 @@ public:
     {
         if (idx >= N)
         {
-            throw std::out_of_range("Index out of range in Array::at()");
+            throw std::out_of_range("Index out of range in array::at()");
         }
 
         return *(this->data + idx);
@@ -158,4 +159,4 @@ public:
         }
     }
 };
-} // namespace dsa
+} // namespace mystl

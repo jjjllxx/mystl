@@ -1,14 +1,14 @@
 #pragma once
 
-#include "LinkedList.h"
+#include "list.h"
 #include <cstddef>
 
-namespace dsa
+namespace mystl
 {
 template<typename T>
-class Queue
+class queue
 {
-    dsa::LinkedList<T> ll;
+    mystl::list<T> ll;
 
 public:
     bool empty() const
@@ -37,7 +37,7 @@ class FixedSizeQueue
 {
     std::size_t cap;
 
-    dsa::LinkedList<T> ll;
+    mystl::list<T> ll;
 
 public:
     FixedSizeQueue(const std::size_t cap) :
@@ -57,7 +57,7 @@ public:
 
     void enqueue(const T& val)
     {
-        if (dsa::FixedSizeQueue<T>::full() == true)
+        if (mystl::FixedSizeQueue<T>::full() == true)
         {
             throw std::overflow_error("enqueue() called on full queue");
         }
@@ -70,4 +70,4 @@ public:
         return this->ll.pop_front();
     }
 };
-} // namespace dsa
+} // namespace mystl
