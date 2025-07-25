@@ -53,4 +53,90 @@ struct iterator_traits<const T*>
     using difference_type   = mystl::ptrdiff_t;
     using iterator_category = mystl::random_access_iterator_tag;
 };
+
+namespace detail
+{
+    template<class It>
+    void do_advance(It& it, typename iterator_traits<It>::difference_type n, input_iterator_tag)
+    {
+        while (n > 0)
+        {
+            --n;
+            ++it;
+        }
+    }
+
+    template<class It>
+    void do_advance(It& it, typename iterator_traits<It>::difference_type n, bidirectional_iterator_tag)
+    {
+        while (n > 0)
+        {
+            --n;
+            ++it;
+        }
+
+        while (n < 0)
+        {
+            ++n;
+            --it;
+        }
+    }
+
+    template<class It>
+    void do_advance(It& it, typename iterator_traits<It>::difference_type n, random_access_iterator_tag)
+    {
+        it += n;
+    }
+
+    template<class It>
+    typename iterator_traits<It>::difference_type
+        do_distance(It first, It last, random_access_iterator_tag)
+    {
+        return last - first;
+    }
+
+    template<class It>
+    typename iterator_traits<It>::difference_type
+        do_distance(It first, It last, input_iterator_tag)
+    {
+        typename iterator_traits<It>::difference_type cnt = 0;
+        while (first != last)
+        {
+            ++first;
+            ++cnt;
+        }
+        return cnt;
+    }
+} // namespace detail
+
+template<class It, class Distance>
+void advance(It& it, Distance n)
+{
+    mystl::detail::do_advance(it,
+                              typename iterator_traits<It>::difference_type { n },
+                              typename iterator_traits<It>::iterator_category {});
+}
+
+template<class InputIt>
+InputIt next(InputIt it, typename iterator_traits<InputIt>::difference_type n = 1)
+{
+    mystl::advance(it, n);
+    return it;
+}
+
+template<class InputIt>
+InputIt prev(InputIt it, typename iterator_traits<InputIt>::difference_type n = -1)
+{
+    mystl::advance(it, -n);
+    return it;
+}
+
+template<class It>
+constexpr typename iterator_traits<It>::difference_type
+    distance(It first, It last)
+{
+    return mystl::detail::do_distance(first,
+                                      last,
+                                      typename iterator_traits<It>::iterator_category {});
+}
 } // namespace mystl
