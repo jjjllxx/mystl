@@ -3,6 +3,24 @@
 #include "iterator.h"
 namespace mystl
 {
+template<typename InputIt, typename OutputIt>
+OutputIt copy(InputIt first, InputIt last, OutputIt dest)
+{
+    while (first != last)
+    {
+        *dest = *first;
+        ++first;
+        ++dest;
+    }
+    return dest;
+}
+
+template<typename ForwardIt1, typename ForwardIt2>
+void iter_swap(ForwardIt1 it1, ForwardIt2 it2)
+{
+    mystl::swap(*it1, *it2);
+}
+
 template<class InputIt, class T = typename mystl::IteratorTraits<InputIt>::ValueType>
 typename mystl::IteratorTraits<InputIt>::DifferenceType
     count(InputIt first, InputIt last, const T& val)
