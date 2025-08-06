@@ -21,6 +21,102 @@ void iter_swap(ForwardIt1 it1, ForwardIt2 it2)
     mystl::swap(*it1, *it2);
 }
 
+// Binary Search
+template<class ForwardIt, typename T = mystl::iterator_traits<ForwardIt>::value_type, class Compare>
+ForwardIt lower_bound(ForwardIt first, ForwardIt last, const T& val, Compare comp)
+{
+    typename mystl::iterator_traits<ForwardIt>::difference_type cnt, step;
+
+    cnt = mystl::distance(first, last);
+    ForwardIt it;
+
+    while (cnt > 0)
+    {
+        it   = first;
+        step = cnt / 2;
+        mystl::advance(it, step);
+
+        if (comp(*it, val))
+        {
+            first = ++it;
+            cnt -= step + 1;
+        }
+        else
+        {
+            cnt = step;
+        }
+    }
+
+    return first;
+}
+
+template<class ForwardIt, typename T = mystl::iterator_traits<ForwardIt>::value_type>
+ForwardIt lower_bound(ForwardIt first, ForwardIt last, const T& val)
+{
+    return mystl::lower_bound(first, last, val, mystl::less<T>());
+}
+
+template<class ForwardIt, typename T = mystl::iterator_traits<ForwardIt>::value_type, class Compare>
+ForwardIt upper_bound(ForwardIt first, ForwardIt last, const T& val, Compare comp)
+{
+    typename mystl::iterator_traits<ForwardIt>::difference_type cnt, step;
+
+    cnt = mystl::distance(first, last);
+    ForwardIt it;
+
+    while (cnt > 0)
+    {
+        it   = first;
+        step = cnt / 2;
+        mystl::advance(it, step);
+
+        if (!comp(val, *it))
+        {
+            first = ++it;
+            cnt -= step + 1;
+        }
+        else
+        {
+            cnt = step;
+        }
+    }
+
+    return first;
+}
+
+template<class ForwardIt, typename T = mystl::iterator_traits<ForwardIt>::value_type>
+ForwardIt upper_bound(ForwardIt first, ForwardIt last, const T& val)
+{
+    return mystl::upper_bound(first, last, val, mystl::less<T>());
+}
+
+template<class ForwardIt, typename T = mystl::iterator_traits<ForwardIt>::value_type, class Compare>
+bool binary_search(ForwardIt first, ForwardIt last, const T& val, Compare comp)
+{
+    first = mystl::lower_bound(first, last, val, comp);
+    return !(first == last) && !comp(val, *first);
+}
+
+template<class ForwardIt, typename T = mystl::iterator_traits<ForwardIt>::value_type>
+bool binary_search(ForwardIt first, ForwardIt last, const T& val)
+{
+    return mystl::binary_search(first, last, val, mystl::less<T>());
+}
+
+template<class ForwardIt, typename T = mystl::iterator_traits<ForwardIt>::value_type, class Compare>
+mystl::pair<ForwardIt, ForwardIt> equal_range(ForwardIt first, ForwardIt last, const T& val, Compare comp)
+{
+    first = mystl::lower_bound(first, last, val, comp);
+    last  = mystl::upper_bound(first, last, val, comp);
+    return mystl::make_pair(first, last);
+}
+
+template<class ForwardIt, typename T = mystl::iterator_traits<ForwardIt>::value_type>
+mystl::pair<ForwardIt, ForwardIt> equal_range(ForwardIt first, ForwardIt last, const T& val)
+{
+    return mystl::equal_range(first, last, val, mystl::less<T>());
+}
+
 template<class InputIt, class T = typename mystl::IteratorTraits<InputIt>::ValueType>
 typename mystl::IteratorTraits<InputIt>::DifferenceType
     count(InputIt first, InputIt last, const T& val)
