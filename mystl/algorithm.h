@@ -117,6 +117,130 @@ mystl::pair<ForwardIt, ForwardIt> equal_range(ForwardIt first, ForwardIt last, c
     return mystl::equal_range(first, last, val, mystl::less<T>());
 }
 
+// minmax
+template<class T>
+const T& min(const T& a, const T& b)
+{
+    return b < a ? b : a;
+}
+
+template<class T, class Compare>
+const T& min(const T& a, const T& b, Compare comp)
+{
+    return comp(b, a) ? b : a;
+}
+
+template<class T>
+const T& max(const T& a, const T& b)
+{
+    return a < b ? b : a;
+}
+
+template<class T, class Compare>
+const T& max(const T& a, const T& b, Compare comp)
+{
+    return comp(a, b) ? b : a;
+}
+
+template<class ForwardIt>
+ForwardIt min_element(ForwardIt first, ForwardIt last)
+{
+    using value_type = typename mystl::iterator_traits<ForwardIt>::value_type;
+    return mystl::min_element(first, last, mystl::less<value_type>());
+}
+
+template<class ForwardIt, class Compare>
+ForwardIt min_element(ForwardIt first, ForwardIt last, Compare comp)
+{
+    if (first == last)
+    {
+        return last;
+    }
+
+    ForwardIt smallest = first;
+
+    while (++first != last)
+    {
+        if (comp(*first, *smallest))
+        {
+            smallest = first;
+        }
+    }
+
+    return smallest;
+}
+
+template<class ForwardIt>
+ForwardIt max_element(ForwardIt first, ForwardIt last)
+{
+    using value_type = typename mystl::iterator_traits<ForwardIt>::value_type;
+    return mystl::max_element(first, last, mystl::less<value_type>());
+}
+
+template<class ForwardIt, class Compare>
+ForwardIt max_element(ForwardIt first, ForwardIt last, Compare comp)
+{
+    if (first == last)
+    {
+        return last;
+    }
+
+    ForwardIt largest = first;
+
+    while (++first != last)
+    {
+        if (comp(*largest, *first))
+        {
+            largest = first;
+        }
+    }
+
+    return largest;
+}
+
+template<class T>
+constexpr mystl::pair<T, T> minmax(const T& a, const T& b)
+{
+    return (b < a)
+               ? mystl::pair<const T&, const T&>(b, a)
+               : mystl::pair<const T&, const T&>(a, b);
+}
+
+template<class T, class Compare>
+constexpr mystl::pair<T, T> minmax(const T& a, const T& b, Compare comp)
+{
+    return comp(b, a)
+               ? mystl::pair<const T&, const T&>(b, a)
+               : mystl::pair<const T&, const T&>(a, b);
+}
+
+template<class ForwardIt, class Compare>
+mystl::pair<ForwardIt, ForwardIt> minmax_element(ForwardIt first, ForwardIt last, Compare comp)
+{
+    if (first == last)
+    {
+        return last;
+    }
+
+    ForwardIt smallest = first;
+    ForwardIt largest  = first;
+
+    while (++first != last)
+    {
+        if (comp(*first, *smallest))
+        {
+            smallest = first;
+        }
+
+        if (comp(*largest, *first))
+        {
+            largest = first;
+        }
+    }
+
+    return mystl::pair<ForwardIt, ForwardIt>(smallest, largest);
+}
+
 template<class InputIt, class T = typename mystl::IteratorTraits<InputIt>::ValueType>
 typename mystl::IteratorTraits<InputIt>::DifferenceType
     count(InputIt first, InputIt last, const T& val)
