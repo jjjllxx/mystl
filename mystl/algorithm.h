@@ -117,6 +117,152 @@ mystl::pair<ForwardIt, ForwardIt> equal_range(ForwardIt first, ForwardIt last, c
     return mystl::equal_range(first, last, val, mystl::less<T>());
 }
 
+// Heap
+namespace Detail
+{
+    template<class RandomIt, class Compare>
+    void sift_down(RandomIt                                               first,
+                   typename mystl::iterator_traits<RandomIt>::difference_type start,
+                   typename mystl::iterator_traits<RandomIt>::difference_type size,
+                   Compare                                                comp)
+    {
+        const auto val  = *(first + start);
+        auto       hole = start;
+
+        while (2 * hole + 1 < size) // To ensure node at it have both left node and right node
+        {
+            auto child = 2 * hole + 1;
+            if (child + 1 < size && comp(*(first + child), *(first + child + 1)))
+            {
+                ++child;
+            }
+
+            if (comp(val, *(first + child)) == false)
+            {
+                break;
+            }
+
+            *(first + hole) = *(first + child);
+            hole            = child;
+        }
+        *(first + hole) = val;
+    }
+} // namespace Detail
+
+template<class RandomIt, class Compare>
+void make_heap(RandomIt first, RandomIt last, Compare comp)
+{
+    using Diff      = typename mystl::iterator_traits<RandomIt>::difference_type;
+    const Diff size = last - first;
+
+    for (Diff i = size / 2 - 1; i >= 0; --i)
+    {
+        mystl::Detail::sift_down(first, i, size, comp);
+        if (i == 0)
+        {
+            break; // avoid underflow for unsigned types
+        }
+    }
+}
+
+template<class RandomIt, class Compare>
+void push_heap(RandomIt first, RandomIt last, Compare comp)
+{
+    using Diff = typename mystl::iterator_traits<RandomIt>::difference_type;
+
+    Diff       child = last - first - 1;
+    const auto value = *(first + child);
+    while (child > 0)
+    {
+        Diff parent = (child - 1) / 2;
+        if (comp(*(first + parent), value) == false)
+        {
+            break;
+        }
+
+        *(first + child) = *(first + parent);
+        child            = parent;
+    }
+
+    *(first + child) = value;
+}
+
+template<class RandomIt, class Compare>
+void pop_heap(RandomIt first, RandomIt last, Compare comp)
+{
+    using Diff = typename mystl::iterator_traits<RandomIt>::difference_type;
+
+    Diff n = last - first;
+    if (n <= 1)
+    {
+        return;
+    }
+
+    mystl::iter_swap(first, last - 1);
+    mystl::Detail::sift_down(first, Diff { 0 }, n - 1, comp);
+}
+
+template<class RandomIt, class Compare>
+bool is_heap(RandomIt first, RandomIt last, Compare comp)
+{
+    using Diff = typename mystl::iterator_traits<RandomIt>::difference_type;
+
+    const Diff n = last - first;
+
+    for (Diff parent = 0; parent < n; ++parent)
+    {
+        Diff left  = 2 * parent + 1;
+        Diff right = 2 * parent + 2;
+
+        if (left < n && comp(*(first + parent), *(first + left)))
+        {
+            return false;
+        }
+
+        if (right < n && comp(*(first + parent), *(first + right)))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+template<class RandomIt, class Compare>
+RandomIt is_heap_until(RandomIt first, RandomIt last, Compare comp)
+{
+    using Diff = typename mystl::iterator_traits<RandomIt>::difference_type;
+
+    const Diff n = last - first;
+
+    for (Diff parent = 0; parent < n; ++parent)
+    {
+        Diff left  = 2 * parent + 1;
+        Diff right = 2 * parent + 2;
+
+        if (left < n && comp(*(first + parent), *(first + left)))
+        {
+            return first + left;
+        }
+
+        if (right < n && comp(*(first + parent), *(first + right)))
+        {
+            return first + right;
+        }
+    }
+
+    return last;
+}
+
+template<class RandomIt, class Compare>
+void sort_heap(RandomIt first, RandomIt last, Compare comp)
+{
+    while (first != last)
+    {
+        mystl::pop_heap(first, last--, comp);
+    }
+}
+
 // minmax
 template<class T>
 const T& min(const T& a, const T& b)
