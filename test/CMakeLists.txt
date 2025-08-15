@@ -1,14 +1,16 @@
 find_package(GTest REQUIRED)
 
-set(TARGET dsa_test)
+include(${CMAKE_CURRENT_LIST_DIR}/mystl/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/extensions/CMakeLists.txt)
+
+set(TARGET mystl_test)
 set(SOURCES
-    ${DSA_CORE_CPPS}
-    ${DSA_TEST_CPPS}
+    ${MYSTL_CORE_CPPS}
+    ${MYSTL_TEST_CPPS}
     main.cpp
 )
 
-include(${PROJECT_SOURCE_DIR}/Algo/CMakeLists.txt)
-include(${PROJECT_SOURCE_DIR}/DS/CMakeLists.txt)
+include(${PROJECT_SOURCE_DIR}/extensions/CMakeLists.txt)
 
 add_executable(${TARGET}
      ${SOURCES})
