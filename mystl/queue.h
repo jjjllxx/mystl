@@ -1,73 +1,53 @@
 #pragma once
 
-#include "list.h"
-#include <cstddef>
+#include "deque.h"
 
 namespace mystl
 {
-template<typename T>
+template<typename T, class Container = mystl::deque<T>>
 class queue
 {
-    mystl::list<T> ll;
+    Container c;
 
 public:
     bool empty() const
     {
-        return this->ll.empty();
+        return this->c.empty();
     }
 
-    void enqueue(const T& val)
+    T& front()
     {
-        this->ll.push_back(val);
+        return this->c.front();
     }
 
-    T dequeue()
+    const T& front() const
     {
-        return this->ll.pop_front();
+        return this->c.front();
     }
 
-    std::size_t size() const
+    T& back()
     {
-        return this->ll.size();
-    }
-};
-
-template<typename T>
-class FixedSizeQueue
-{
-    std::size_t cap;
-
-    mystl::list<T> ll;
-
-public:
-    FixedSizeQueue(const std::size_t cap) :
-        cap(cap)
-    {
+        return this->c.back();
     }
 
-    bool empty() const
+    const T& back() const
     {
-        return this->ll.empty();
+        return this->c.back();
     }
 
-    bool full() const
+    void push(const T& val)
     {
-        return this->ll.size() == this->cap;
+        this->c.push_back(val);
     }
 
-    void enqueue(const T& val)
+    void pop()
     {
-        if (mystl::FixedSizeQueue<T>::full() == true)
-        {
-            throw std::overflow_error("enqueue() called on full queue");
-        }
-
-        this->ll.push_back(val);
+        this->c.pop_front();
     }
-    
-    T dequeue()
+
+    mystl::size_t size() const
     {
-        return this->ll.pop_front();
+        return this->c.size();
     }
 };
 } // namespace mystl
