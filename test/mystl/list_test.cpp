@@ -1,245 +1,193 @@
-#include "list.h"
+#include "mystl/algorithm.h"
+#include "mystl/iterator.h"
+#include "mystl/list.h"
+#include "mystl/vector.h"
 #include <gtest/gtest.h>
-#include <stdexcept>
 
 namespace mystl_test
 {
 namespace list
 {
-    const dsa::list<int> EMPTY_LIST;
-    const dsa::list<int> LINKED_LIST = { 1, 2, 3, 4, 5 };
+    const mystl::list<int> EMPTY_LIST;
+    const mystl::list<int> LINKED_LIST = { 1, 2, 3, 4, 5 };
 } // namespace list
 } // namespace mystl_test
 
-GTEST_TEST(DS_LinkedList, initialise_with_list)
+GTEST_TEST(mystl_list, initialise_with_size_and_value)
 {
-    EXPECT_EQ(mystl_test::list::LINKED_LIST.at(0), 1);
-    EXPECT_EQ(mystl_test::list::LINKED_LIST.at(1), 2);
-    EXPECT_EQ(mystl_test::list::LINKED_LIST.at(2), 3);
-    EXPECT_EQ(mystl_test::list::LINKED_LIST.at(3), 4);
-    EXPECT_EQ(mystl_test::list::LINKED_LIST.at(4), 5);
+    const mystl::list<int> ll(5, 2);
+    EXPECT_EQ(ll.size(), 5);
+    EXPECT_TRUE(mystl::equal(ll.begin(),
+                           ll.end(),
+                           mystl::vector<int> { 2, 2, 2, 2, 2 }.begin()));
 }
 
-GTEST_TEST(DS_LinkedList, size)
+GTEST_TEST(mystl_list, initialise_with_list)
+{
+    EXPECT_EQ(mystl_test::list::LINKED_LIST.size(), 5);
+    EXPECT_TRUE(mystl::equal(mystl_test::list::LINKED_LIST.begin(),
+                           mystl_test::list::LINKED_LIST.end(),
+                           mystl::vector<int> { 1, 2, 3, 4, 5 }.begin()));
+}
+
+GTEST_TEST(mystl_list, size)
 {
     EXPECT_EQ(mystl_test::list::LINKED_LIST.size(), 5);
 }
 
-GTEST_TEST(DS_LinkedList, empty_true)
+GTEST_TEST(mystl_list, empty_true)
 {
     EXPECT_TRUE(mystl_test::list::EMPTY_LIST.empty());
 }
 
-GTEST_TEST(DS_LinkedList, empty_false)
+GTEST_TEST(mystl_list, empty_false)
 {
     EXPECT_FALSE(mystl_test::list::LINKED_LIST.empty());
 }
 
-GTEST_TEST(DS_LinkedList, subscript_operation_access)
+GTEST_TEST(mystl_list, push_front)
 {
-    EXPECT_EQ(mystl_test::list::LINKED_LIST.at(2), 3);
-}
+    mystl::list<int> ll = { 1, 2, 3 };
 
-GTEST_TEST(DS_LinkedList, subscript_operation_modify)
-{
-    dsa::list<int> ll       = { 1, 2, 3 };
-    ll.at(0)                = 3;
-    EXPECT_EQ(ll.at(0), 3);
-}
-
-GTEST_TEST(DS_LinkedList, value_n_from_end)
-{
-    EXPECT_EQ(mystl_test::list::LINKED_LIST.value_n_from_end(1), 4);
-}
-
-GTEST_TEST(DS_LinkedList, value_n_from_end_out_of_range)
-{
-    EXPECT_THROW(mystl_test::list::LINKED_LIST.value_n_from_end(6), std::out_of_range);
-}
-
-GTEST_TEST(DS_LinkedList, push_front)
-{
-    dsa::list<int>       ll          = { 1, 2, 3 };
-    const int            val_to_push = 5;
-    ll.push_front(val_to_push);
-    EXPECT_EQ(ll.front(), val_to_push);
+    ll.push_front(5);
+    EXPECT_EQ(ll.front(), 5);
     EXPECT_EQ(ll.size(), 4);
 }
 
-GTEST_TEST(DS_LinkedList, push_front_empty)
+GTEST_TEST(mystl_list, push_front_empty)
 {
-    dsa::list<int>       ll;
-    const int            val_to_push = 5;
-    ll.push_front(val_to_push);
-    EXPECT_EQ(ll.front(), val_to_push);
-    EXPECT_EQ(ll.back(), val_to_push);
+    mystl::list<int> ll;
+    ll.push_front(5);
+    EXPECT_EQ(ll.front(), 5);
+    EXPECT_EQ(ll.back(), 5);
     EXPECT_EQ(ll.size(), 1);
 }
 
-GTEST_TEST(DS_LinkedList, pop_front)
+GTEST_TEST(mystl_list, pop_front)
 {
-    dsa::list<int> ll = { 1, 2, 3 };
+    mystl::list<int> ll = { 1, 2, 3 };
     EXPECT_EQ(ll.pop_front(), 1);
     EXPECT_EQ(ll.front(), 2);
     EXPECT_EQ(ll.size(), 2);
 }
 
-GTEST_TEST(DS_LinkedList, pop_front_empty)
+GTEST_TEST(mystl_list, push_back)
 {
-    dsa::list<int> ll;
-    EXPECT_THROW(ll.pop_front(), std::out_of_range);
-}
-
-GTEST_TEST(DS_LinkedList, push_back)
-{
-    dsa::list<int>       ll          = { 1, 2, 3 };
-    const int            val_to_push = 5;
-    ll.push_back(val_to_push);
-    EXPECT_EQ(ll.back(), val_to_push);
+    mystl::list<int> ll = { 1, 2, 3 };
+    ll.push_back(5);
+    EXPECT_EQ(ll.back(), 5);
     EXPECT_EQ(ll.size(), 4);
 }
 
-GTEST_TEST(DS_LinkedList, push_back_empty)
+GTEST_TEST(mystl_list, push_back_empty)
 {
-    dsa::list<int>       ll;
-    const int            val_to_push = 5;
-    ll.push_back(val_to_push);
-    EXPECT_EQ(ll.front(), val_to_push);
-    EXPECT_EQ(ll.back(), val_to_push);
+    mystl::list<int> ll;
+    ll.push_back(5);
+    EXPECT_EQ(ll.front(), 5);
+    EXPECT_EQ(ll.back(), 5);
     EXPECT_EQ(ll.size(), 1);
 }
 
-GTEST_TEST(DS_LinkedList, pop_back)
+GTEST_TEST(mystl_list, pop_back)
 {
-    dsa::list<int> ll = { 1, 2, 3 };
-    EXPECT_EQ(ll.pop_back(), 1);
+    mystl::list<int> ll = { 1, 2, 3 };
+    EXPECT_EQ(ll.pop_back(), 3);
     EXPECT_EQ(ll.back(), 2);
     EXPECT_EQ(ll.size(), 2);
 }
 
-GTEST_TEST(DS_LinkedList, pop_back_empty)
-{
-    dsa::list<int> ll;
-    EXPECT_THROW(ll.pop_back(), std::out_of_range);
-}
-
-GTEST_TEST(DS_LinkedList, front)
+GTEST_TEST(mystl_list, front)
 {
     EXPECT_EQ(mystl_test::list::LINKED_LIST.front(), 1);
 }
 
-GTEST_TEST(DS_LinkedList, front_empty)
-{
-    EXPECT_THROW(mystl_test::list::EMPTY_LIST.front(), std::out_of_range);
-}
-
-GTEST_TEST(DS_LinkedList, back)
+GTEST_TEST(mystl_list, back)
 {
     EXPECT_EQ(mystl_test::list::LINKED_LIST.back(), 5);
 }
 
-GTEST_TEST(DS_LinkedList, back_empty)
+GTEST_TEST(mystl_list, insert_back)
 {
-    EXPECT_THROW(mystl_test::list::EMPTY_LIST.back(), std::out_of_range);
-}
-
-GTEST_TEST(DS_LinkedList, insert_out_of_range)
-{
-    dsa::list<int> ll = { 1, 2, 3 };
-    EXPECT_THROW(ll.insert(ll.size() + 2, 5), std::out_of_range);
-}
-
-GTEST_TEST(DS_LinkedList, insert_back)
-{
-    dsa::list<int> ll = { 1, 2, 3 };
-    ll.insert(ll.size(), 5);
+    mystl::list<int> ll = { 1, 2, 3 };
+    EXPECT_EQ(*ll.insert(ll.end(), 5), 5);
+    EXPECT_EQ(ll.size(), 4);
     EXPECT_EQ(ll.back(), 5);
 }
 
-GTEST_TEST(DS_LinkedList, insert_front)
+GTEST_TEST(mystl_list, insert_front)
 {
-    dsa::list<int> ll = { 1, 2, 3 };
-    ll.insert(0, 5);
+    mystl::list<int> ll = { 1, 2, 3 };
+    EXPECT_EQ(*ll.insert(ll.begin(), 5), 5);
+    EXPECT_EQ(ll.size(), 4);
     EXPECT_EQ(ll.front(), 5);
 }
 
-GTEST_TEST(DS_LinkedList, insert)
+GTEST_TEST(mystl_list, insert)
 {
-    dsa::list<int> ll = { 1, 2, 3 };
-    ll.insert(2, 5);
-    EXPECT_EQ(ll.at(2), 5);
+    mystl::list<int> ll = { 1, 2, 3 };
+    EXPECT_EQ(*ll.insert(mystl::next(ll.begin(), 2), 5), 5);
+    EXPECT_EQ(ll.size(), 4);
+    EXPECT_TRUE(mystl::equal(ll.begin(), ll.end(), mystl::vector<int> { 1, 2,5, 3 }.begin()));
 }
 
-GTEST_TEST(DS_LinkedList, erase_out_of_range)
+GTEST_TEST(mystl_list, erase_back)
 {
-    dsa::list<int> ll = { 1, 2, 3, 4 };
-    EXPECT_THROW(ll.erase(ll.size()), std::out_of_range);
-}
-
-GTEST_TEST(DS_LinkedList, erase_back)
-{
-    dsa::list<int> ll = { 1, 2, 3, 4 };
-    ll.erase(ll.size() - 1);
+    mystl::list<int> ll = { 1, 2, 3, 4 };
+    EXPECT_EQ(ll.erase(mystl::next(ll.begin(), ll.size() - 1)), ll.end());
+    EXPECT_EQ(ll.size(), 3);
     EXPECT_EQ(ll.back(), 3);
 }
 
-GTEST_TEST(DS_LinkedList, erase_front)
+GTEST_TEST(mystl_list, erase_front)
 {
-    dsa::list<int> ll = { 1, 2, 3, 4 };
-    ll.erase(0);
+    mystl::list<int> ll = { 1, 2, 3, 4 };
+    EXPECT_EQ(*ll.erase(ll.begin()), 2);
+    EXPECT_EQ(ll.size(), 3);
     EXPECT_EQ(ll.front(), 2);
 }
 
-GTEST_TEST(DS_LinkedList, erase)
+GTEST_TEST(mystl_list, erase)
 {
-    dsa::list<int> ll = { 1, 2, 3, 4 };
-    ll.erase(2);
-    EXPECT_EQ(ll.at(0), 1);
-    EXPECT_EQ(ll.at(1), 2);
-    EXPECT_EQ(ll.at(2), 4);
-}
-
-GTEST_TEST(DS_LinkedList, remove)
-{
-    dsa::list<int> ll = { 2, 1, 2, 3, 4, 2 };
-    ll.remove(2);
-    EXPECT_EQ(ll.front(), 1);
-    EXPECT_EQ(ll.at(1), 3);
-    EXPECT_EQ(ll.back(), 4);
+    mystl::list<int> ll = { 1, 2, 3, 4 };
+    EXPECT_EQ(*ll.erase(mystl::next(ll.begin(), 2)), 4);
+    EXPECT_TRUE(mystl::equal(ll.begin(), ll.end(), mystl::vector<int>{1, 2, 4}.begin()));
     EXPECT_EQ(ll.size(), 3);
 }
 
-GTEST_TEST(DS_LinkedList, remove_all_same)
+GTEST_TEST(mystl_list, remove)
 {
-    dsa::list<int> ll = { 2, 2, 2, 2, 2, 2 };
-    ll.remove(2);
-    EXPECT_TRUE(ll.empty());
-    EXPECT_THROW(mystl_test::list::EMPTY_LIST.front(), std::out_of_range);
-    EXPECT_THROW(mystl_test::list::EMPTY_LIST.back(), std::out_of_range);
+    mystl::list<int> ll = { 2, 1, 2, 3, 4, 2 };
+    EXPECT_EQ(ll.remove(2), 3);
+    EXPECT_EQ(ll.size(), 3);
+    EXPECT_TRUE(mystl::equal(ll.begin(), ll.end(), mystl::vector<int> { 1, 3, 4 }.begin()));
 }
 
-GTEST_TEST(DS_LinkedList, reverse)
+GTEST_TEST(mystl_list, remove_all_same)
 {
-    dsa::list<int> ll = { 2, 1, 2, 3, 4, 5 };
-    ll.reverse();
-    EXPECT_EQ(ll.at(0), 5);
-    EXPECT_EQ(ll.at(1), 4);
-    EXPECT_EQ(ll.at(2), 3);
-    EXPECT_EQ(ll.at(3), 2);
-    EXPECT_EQ(ll.at(4), 1);
-    EXPECT_EQ(ll.at(5), 2);
-}
-
-GTEST_TEST(DS_LinkedList, reverse_empty)
-{
-    dsa::list<int> ll;
-    ll.reverse();
+    mystl::list<int> ll = { 2, 2, 2, 2, 2, 2 };
+    EXPECT_EQ(ll.remove(2), 6);
     EXPECT_TRUE(ll.empty());
 }
 
-GTEST_TEST(DS_LinkedList, reverse_one)
+GTEST_TEST(mystl_list, reverse)
 {
-    dsa::list<int> ll = { 2 };
+    mystl::list<int> ll = { 2, 1, 2, 3, 4, 5 };
+    ll.reverse();
+    EXPECT_TRUE(mystl::equal(ll.begin(),
+                           ll.end(),
+                           mystl::vector<int> { 5, 4, 3, 2, 1, 2 }.begin()));
+}
+
+GTEST_TEST(mystl_list, reverse_empty)
+{
+    mystl::list<int> ll;
+    ll.reverse();
+    EXPECT_TRUE(ll.empty());
+}
+
+GTEST_TEST(mystl_list, reverse_one)
+{
+    mystl::list<int> ll = { 2 };
     ll.reverse();
     EXPECT_EQ(ll.back(), 2);
     EXPECT_EQ(ll.front(), 2);
