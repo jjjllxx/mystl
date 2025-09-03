@@ -1,95 +1,231 @@
 #pragma once
 
-#include <cstddef>
+#include "iterator.h"
+#include "utility.h"
+
 #include <initializer_list>
-#include <stdexcept>
 
 namespace mystl
 {
 template<typename T>
-struct list_node
-{
-    T val;
-
-    mystl::list_node<T>* next;
-};
-
-template<typename T>
 class list
 {
-    std::size_t sz;
-
-    mystl::list_node<T>* head;
-    mystl::list_node<T>* tail;
-
-    mystl::list_node<T>* find_node(const std::size_t idx) const
+    struct list_node
     {
+        T val;
+
+        list_node* prev;
+        list_node* next;
+
+        list_node(const T&   v,
+                  list_node* p,
+                  list_node* n) :
+            val(v),
+            prev(p),
+            next(n)
         {
-            if (idx >= this->sz)
-            {
-                throw std::out_of_range("Index out of range in list::find_node()");
-            }
-
-            mystl::list_node<T>* node = this->head;
-
-            for (std::size_t i = 0; i < idx; ++i)
-            {
-                node = node->next;
-            }
-
-            return node;
         }
-    }
+    };
+
+public:
+    class iterator
+    {
+        list_node* node;
+
+    public:
+        using value_type        = T;
+        using difference_type   = mystl::ptrdiff_t;
+        using pointer           = T*;
+        using reference         = T&;
+        using iterator_category = mystl::bidirectional_iterator_tag;
+
+        iterator() :
+            node(nullptr)
+        {
+        }
+
+        explicit iterator(list_node* n) :
+            node(n)
+        {
+        }
+
+        reference operator*() const
+        {
+            return this->node->val;
+        }
+
+        pointer operator->() const
+        {
+            return &(this->node->val);
+        }
+
+        iterator& operator++()
+        {
+            this->node = this->node->next;
+            return *this;
+        }
+
+        iterator operator++(int)
+        {
+            iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        iterator& operator--()
+        {
+            this->node = this->node->prev;
+            return *this;
+        }
+
+        iterator operator--(int)
+        {
+            iterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        bool operator==(const iterator& other) const
+        {
+            return this->node == other.node;
+        }
+
+        bool operator!=(const iterator& other) const
+        {
+            return !(*this == other);
+        }
+
+        friend class list;
+    };
+
+    class const_iterator
+    {
+        list_node* node;
+
+    public:
+        using value_type        = T;
+        using difference_type   = mystl::ptrdiff_t;
+        using pointer           = T*;
+        using reference         = T&;
+        using iterator_category = mystl::bidirectional_iterator_tag;
+
+        const_iterator() :
+            node(nullptr)
+        {
+        }
+
+        explicit const_iterator(list_node* n) :
+            node(n)
+        {
+        }
+
+        reference operator*() const
+        {
+            return this->node->val;
+        }
+
+        pointer operator->() const
+        {
+            return &(this->node->val);
+        }
+
+        const_iterator& operator++()
+        {
+            this->node = this->node->next;
+            return *this;
+        }
+
+        const_iterator operator++(int)
+        {
+            const_iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        const_iterator& operator--()
+        {
+            this->node = this->node->prev;
+            return *this;
+        }
+
+        const_iterator operator--(int)
+        {
+            const_iterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        bool operator==(const const_iterator& other) const
+        {
+            return this->node == other.node;
+        }
+
+        bool operator!=(const const_iterator& other) const
+        {
+            return !(*this == other);
+        }
+
+        friend class list;
+    };
+
+private:
+    mystl::size_t sz;
+
+    list_node* dummy;
 
 public:
     list() :
         sz(0),
-        head(nullptr),
-        tail(nullptr)
+        dummy(new list_node { T {}, nullptr, nullptr })
     {
+        this->dummy->next = this->dummy;
+        this->dummy->prev = this->dummy;
+    }
+
+    list(const mystl::size_t n, const T& val) :
+        sz(n),
+        dummy(new list_node { T {}, nullptr, nullptr })
+    {
+        list_node* pre = this->dummy;
+        for (mystl::size_t idx = 0; idx < n; ++idx)
+        {
+            list_node* node = new list_node { val, pre, nullptr };
+            pre->next       = node;
+            pre             = node;
+        }
+        pre->next         = this->dummy;
+        this->dummy->prev = pre;
     }
 
     list(const std::initializer_list<T>& items) :
-        sz(items.size())
+        sz(items.size()),
+        dummy(new list_node { T {}, nullptr, nullptr })
     {
-        mystl::list_node<T>* pre = nullptr;
-        for (std::size_t idx = 0; idx < items.size(); ++idx)
+        list_node* pre = this->dummy;
+        for (const T& val : items)
         {
-            mystl::list_node<T>* node = new mystl::list_node<T>;
-            node->val              = *(items.begin() + idx);
-            node->next             = nullptr;
-
-            if (idx == 0)
-            {
-                this->head = node;
-            }
-            else
-            {
-                pre->next = node;
-            }
-
-            pre = node;
-
-            if (idx == items.size() - 1)
-            {
-                this->tail = node;
-            }
+            list_node* node = new list_node { val, pre, nullptr };
+            pre->next       = node;
+            pre             = node;
         }
+        pre->next         = this->dummy;
+        this->dummy->prev = pre;
     }
 
     ~list()
     {
-        mystl::list_node<T>* cur = this->head;
-        mystl::list_node<T>* nxt = nullptr;
-        while (cur != nullptr)
+        list_node* cur = this->dummy->next;
+        list_node* nxt = nullptr;
+        while (cur != this->dummy)
         {
             nxt = cur->next;
             delete cur;
             cur = nxt;
         }
+        delete this->dummy;
     }
 
-    std::size_t size() const
+    mystl::size_t size() const
     {
         return this->sz;
     }
@@ -98,59 +234,43 @@ public:
     {
         return this->sz == 0;
     }
-
-    const T& at(const std::size_t idx) const
+    
+    T& front()
     {
-        return mystl::list<T>::find_node(idx)->val;
+        return this->dummy->next->val;
     }
 
-    T& at(const std::size_t idx)
+    const T& front() const
     {
-        return mystl::list<T>::find_node(idx)->val;
+        return this->dummy->next->val;
     }
 
-    const T& value_n_from_end(const std::size_t idx) const
+    T& back()
     {
-        if (idx >= this->sz)
-        {
-            throw std::out_of_range("Index out of range in list::value_n_from_end()");
-        }
+        return this->dummy->prev->val;
+    }
 
-        return mystl::list<T>::at(this->sz - idx - 1);
+    const T& back() const
+    {
+        return this->dummy->prev->val;
     }
 
     void push_front(const T& val)
     {
-        mystl::list_node<T>* newHead = new list_node<T>;
-        newHead->val              = val;
-        newHead->next             = this->head;
-        this->head                = newHead;
-
-        if (mystl::list<T>::empty() == true)
-        {
-            this->tail = this->head;
-        }
-
+        list_node* newHead  = new list_node { val, this->dummy, dummy->next };
+        this->dummy->next   = newHead;
+        newHead->next->prev = newHead;
         this->sz++;
     }
 
     T pop_front()
     {
-        if (mystl::list<T>::empty() == true)
-        {
-            throw std::out_of_range("pop_front() called on empty linked list");
-        }
+        const T    front = this->dummy->next->val;
+        list_node* head  = this->dummy->next;
+        dummy->next      = head->next;
+        head->next->prev = dummy;
 
-        const T           front   = this->head->val;
-        mystl::list_node<T>* preHead = this->head;
-        this->head                = this->head->next;
-
-        if (this->sz == 1)
-        {
-            this->tail = nullptr;
-        }
-
-        delete preHead;
+        delete head;
         this->sz--;
 
         return front;
@@ -158,168 +278,117 @@ public:
 
     void push_back(const T& val)
     {
-        if (mystl::list<T>::empty() == true)
-        {
-            mystl::list<T>::push_front(val);
-        }
-        else
-        {
-            mystl::list_node<T>* newTail = new list_node<T>;
-            newTail->val              = val;
-            newTail->next             = nullptr;
-
-            this->tail->next = newTail;
-            this->tail       = newTail;
-            this->sz++;
-        }
+        list_node* newTail  = new list_node { val, this->dummy->prev, this->dummy };
+        this->dummy->prev   = newTail;
+        newTail->prev->next = newTail;
+        this->sz++;
     }
 
     T pop_back()
     {
-        if (mystl::list<T>::empty() == true)
-        {
-            throw std::out_of_range("pop_back() called on empty linked list");
-        }
+        const T    back  = this->dummy->prev->val;
+        list_node* tail  = this->dummy->prev;
+        dummy->prev      = tail->prev;
+        tail->prev->next = dummy;
 
-        if (this->sz == 1)
-        {
-            return mystl::list<T>::pop_front();
-        }
-
-        mystl::list_node<T>* node = mystl::list<T>::find_node(mystl::list<T>::size() - 2);
-
-        node->next   = nullptr;
-        const T back = this->head->val;
-        delete this->tail;
-        this->tail = node;
+        delete tail;
         this->sz--;
 
         return back;
     }
 
-    const T& front() const
+    iterator begin() 
     {
-        if (mystl::list<T>::empty() == true)
-        {
-            throw std::out_of_range("front() called on empty linked list");
-        }
-
-        return this->head->val;
+        return iterator { this->dummy->next };
     }
 
-    const T& back() const
+    iterator end() 
     {
-        if (mystl::list<T>::empty() == true)
-        {
-            throw std::out_of_range("back() called on empty linked list");
-        }
-
-        return this->tail->val;
+        return iterator { this->dummy };
     }
 
-    void insert(const std::size_t idx,
-                const T&          val)
+    const_iterator begin() const
     {
-        if (idx > this->sz)
-        {
-            throw std::out_of_range("Index out of range in list::insert()");
-        }
-
-        if (idx == 0)
-        {
-            return mystl::list<T>::push_front(val);
-        }
-
-        if (idx == this->sz)
-        {
-            return mystl::list<T>::push_back(val);
-        }
-
-        mystl::list_node<T>* preNode = mystl::list<T>::find_node(idx - 1);
-        mystl::list_node<T>* newNode = new list_node<T>;
-        newNode->val              = val;
-        newNode->next             = preNode->next;
-        preNode->next             = newNode;
-        this->sz++;
+        return const_iterator { this->dummy->next };
     }
 
-    void erase(const std::size_t idx)
+    const_iterator end() const
     {
-        if (idx >= this->sz)
-        {
-            throw std::out_of_range("Index out of range in list::erase()");
-        }
-
-        if (idx == 0)
-        {
-            mystl::list<T>::pop_front();
-        }
-        else if (idx == this->sz - 1)
-        {
-            mystl::list<T>::pop_back();
-        }
-        else
-        {
-            mystl::list_node<T>* preNode = mystl::list<T>::find_node(idx - 1);
-            mystl::list_node<T>* curNode = preNode->next;
-            preNode->next             = curNode->next;
-            delete curNode;
-            this->sz--;
-        }
+        return const_iterator { this->dummy };
     }
 
-    void remove(const T& val)
+    iterator insert(const iterator& pos, const T& val)
     {
-        while (this->head != nullptr && this->head->val == val)
+        list_node* node  = new list_node(val, pos.node->prev, pos.node);
+        node->prev->next = node;
+        node->next->prev = node;
+        ++this->sz;
+        return iterator { node };
+    }
+
+    iterator erase(const iterator& pos)
+    {
+        if (pos.node == this->dummy)
         {
-            mystl::list<T>::pop_front();
+            return iterator { dummy };
         }
 
-        if (mystl::list<T>::empty() == true)
-        {
-            return;
-        }
+        list_node* target  = pos.node;
+        target->prev->next = target->next;
+        target->next->prev = target->prev;
+        const iterator it { target->next };
 
-        mystl::list_node<T>* pre = this->head;
-        mystl::list_node<T>* cur = this->head->next;
+        delete target;
+        --this->sz;
 
-        while (cur != nullptr)
+        return it;
+    }
+
+    mystl::size_t remove(const T& val)
+    {
+        mystl::size_t cnt = 0;
+        list_node*  cur = this->dummy->next;
+
+        while (cur != dummy)
         {
             if (cur->val == val)
             {
-                pre->next = cur->next;
+                cur->prev->next = cur->next;
+                cur->next->prev = cur->prev;
+                list_node* nxt  = cur->next;
                 delete cur;
-                cur = pre->next;
-                this->sz--;
+                ++cnt;
+                cur = nxt;
             }
             else
             {
-                pre = cur;
                 cur = cur->next;
             }
         }
 
-        this->tail = pre;
+        this->sz -= cnt;
+
+        return cnt;
+    }
+
+    void clear()
+    {
+        while (this->empty() == false)
+        {
+            this->pop_front();
+        }
     }
 
     void reverse()
     {
-        if (mystl::list<T>::empty() == false)
+        list_node* node = this->dummy->next;
+        while (node != this->dummy)
         {
-            mystl::list_node<T>* pre = nullptr;
-            mystl::list_node<T>* cur = this->head;
-            mystl::list_node<T>* nxt = this->head->next;
-            while (cur != nullptr)
-            {
-                nxt       = cur->next;
-                cur->next = pre;
-                pre       = cur;
-                cur       = nxt;
-            }
-
-            this->tail = this->head;
-            this->head = pre;
+            mystl::swap(node->prev, node->next);
+            node = node->prev;
         }
+
+        mystl::swap(this->dummy->next, this->dummy->prev);
     }
 };
 } // namespace mystl
