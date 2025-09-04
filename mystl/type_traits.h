@@ -5,14 +5,14 @@ namespace mystl
 template<typename T, T v>
 struct integral_constant
 {
-    static constexpr T Value = v;
+    static constexpr T value = v;
 
     using value_type = T;
-    using Type       = integral_constant;
+    using type       = integral_constant;
 
     constexpr operator value_type() const noexcept
     {
-        return Value;
+        return value;
     }
 };
 
@@ -22,29 +22,34 @@ using false_type = integral_constant<bool, false>;
 template<typename T>
 struct remove_reference
 {
-    using Type = T;
+    using type = T;
 };
 
 template<typename T>
 struct remove_reference<T&>
 {
-    using Type = T;
+    using type = T;
 };
 
 template<typename T>
 struct remove_reference<T&&>
 {
-    using Type = T;
+    using type = T;
+};
+
+template<bool B, class T = void>
+struct enable_if
+{
 };
 
 template<class T>
 struct enable_if<true, T>
 {
-    using Type = T;
+    using type = T;
 };
 
 template<bool B, typename T = void>
-using enable_if_t = typename enable_if<B, T>::Type;
+using enable_if_t = typename enable_if<B, T>::type;
 
 template<typename T>
 struct is_integral_base : false_type
@@ -117,15 +122,15 @@ struct is_integral_base<unsigned long long> : true_type
 };
 
 template<typename T>
-struct is_integral : is_integral_base<typename remove_reference<T>::Type>
+struct is_integral : is_integral_base<typename remove_reference<T>::type>
 {
 };
 
 template<typename T>
-using is_integral_t = typename is_integral<T>::Type;
+using is_integral_t = typename is_integral<T>::type;
 
 template<typename T>
-constexpr bool is_integral_v = is_integral<T>::Value;
+constexpr bool is_integral_v = is_integral<T>::value;
 
 template<class T, class U>
 struct is_same : mystl::false_type
@@ -138,5 +143,5 @@ struct is_same<T, T> : mystl::true_type
 };
 
 template<class T, class U>
-constexpr bool is_same_v = is_same<T, U>::Value;
+constexpr bool is_same_v = is_same<T, U>::value;
 } // namespace mystl

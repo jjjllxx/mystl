@@ -1,6 +1,9 @@
 #pragma once
 
+#include "functional.h"
 #include "iterator.h"
+#include "utility.h"
+
 namespace mystl
 {
 template<typename InputIt, typename OutputIt>
@@ -387,11 +390,11 @@ mystl::pair<ForwardIt, ForwardIt> minmax_element(ForwardIt first, ForwardIt last
     return mystl::pair<ForwardIt, ForwardIt>(smallest, largest);
 }
 
-template<class InputIt, class T = typename mystl::IteratorTraits<InputIt>::ValueType>
-typename mystl::IteratorTraits<InputIt>::DifferenceType
+template<class InputIt, class T = typename mystl::iterator_traits<InputIt>::value_type>
+typename mystl::iterator_traits<InputIt>::difference_type
     count(InputIt first, InputIt last, const T& val)
 {
-    typename mystl::IteratorTraits<InputIt>::DifferenceType cnt = 0;
+    typename mystl::iterator_traits<InputIt>::difference_type cnt = 0;
 
     for (; first != last; ++first)
     {
@@ -404,11 +407,11 @@ typename mystl::IteratorTraits<InputIt>::DifferenceType
     return cnt;
 }
 
-template<class InputIt, class T = typename mystl::IteratorTraits<InputIt>::ValueType, class UnaryPred>
-typename mystl::IteratorTraits<InputIt>::DifferenceType
+template<class InputIt, class T = typename mystl::iterator_traits<InputIt>::value_type, class UnaryPred>
+typename mystl::iterator_traits<InputIt>::difference_type
     count_if(InputIt first, InputIt last, UnaryPred p)
 {
-    typename mystl::IteratorTraits<InputIt>::DifferenceType cnt = 0;
+    typename mystl::iterator_traits<InputIt>::difference_type cnt = 0;
 
     for (; first != last; ++first)
     {
@@ -449,7 +452,7 @@ bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPred p)
     return true;
 }
 
-template<class InputIt, class T = typename mystl::IteratorTraits<InputIt>::ValueType>
+template<class InputIt, class T = typename mystl::iterator_traits<InputIt>::value_type>
 constexpr InputIt find(InputIt first, InputIt last, const T& val)
 {
     for (; first != last; ++first)

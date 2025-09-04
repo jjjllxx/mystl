@@ -5,13 +5,13 @@
 namespace mystl
 {
 template<typename T>
-constexpr typename remove_reference<T>::Type&& move(T&& arg) noexcept
+constexpr typename remove_reference<T>::type&& move(T&& arg) noexcept
 {
-    return static_cast<typename remove_reference<T>::Type&&>(arg);
+    return static_cast<typename remove_reference<T>::type&&>(arg);
 }
 
 template<typename T>
-constexpr T&& forward(typename remove_reference<T>::Type& param) noexcept
+constexpr T&& forward(typename remove_reference<T>::type& param) noexcept
 {
     return static_cast<T&&>(param);
 }
