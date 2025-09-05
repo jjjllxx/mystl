@@ -1,38 +1,49 @@
-# coding-interview-university-cpp
-This repository contains C++ implementations of data structures and algorithms inspired by the [Coding Interview University](https://github.com/jwasham/coding-interview-university) project. 
-
-**Note:**
-1. The goal of this repository is to learn and implement core concepts from scratch.
-2. The implementations may differ from the C++ Standard Template Library (STL). 
-3. STL is avoided intentionally to reinforce understanding of the internal workings of data structures.
+# mystl
+`mystl` is a **from-scratch implementation of the C++ Standard Template Library (STL)**.  
+It aims to be *faithful to the official STL design*, covering containers, iterators, and algorithms, while also providing **extra data structures and utilities** for interview preparation and practice.  
 
 ## Structure
-- **Data Structures:** Implemented in the [`DS`](DS) directory  
-- **Unit Tests:** Written using [Google Test (gtest)](https://google.github.io/googletest/)
+- **mystl:** Implemenation of container, algorithm and iterator faithful to STL.  
+- **test:** Unit test written using [Google Test (gtest)](https://google.github.io/googletest/)
+- **extensions:** Useful data structures and algorithms inspired by [Coding Interview University](https://github.com/jwasham/coding-interview-university) (not included in STL).
 
 ## Running the Tests
 
 ### 1. Initial Setup (Run once)
 ``` bash
-cd coding-interview-university-cpp
-mkdir bin
+git clone https://github.com/jjjllxx/mystl.git
+cd mystl
 mkdir build
 ```
 
 ### 2. Compile the Project
-```
+``` bash
 cd build
-cmake -DDSA_TEST=on ..
+cmake -DMYSTL_TEST=on ..
 make -j16
 ```
 
 ### 3. Run Unit Tests
-```
+``` bash
 cd bin
-./dsa_test
+./mystl_test
 ```
 
 ### 4. (Optional) Check for Memory Leaks
+For Linux
+``` bash
+valgrind --leak-check=full ./mystl_test
 ```
-valgrind --leak-check=full ./dsa_test
+
+For MacOS
+```bash
+export MallocStackLogging=1
+leaks --atExit --list -- ./mystl_test
 ```
+
+## Features
+✅ STL-like containers (vector, map, set, unordered_map, etc.)  
+✅ STL-compliant iterators  
+✅ Common algorithms (sort, find, etc.)  
+✅ Unit tested with GoogleTest  
+⚡ Extensions: useful interview-style data structures (not in STL)
