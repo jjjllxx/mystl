@@ -1,23 +1,13 @@
 #pragma once
 
+#include "bits/stl_algobase.h"
 #include "functional.h"
 #include "iterator.h"
 #include "utility.h"
 
 namespace mystl
 {
-template<typename InputIt, typename OutputIt>
-OutputIt copy(InputIt first, InputIt last, OutputIt dest)
-{
-    while (first != last)
-    {
-        *dest = *first;
-        ++first;
-        ++dest;
-    }
-    return dest;
-}
-
+// modify
 template<typename ForwardIt1, typename ForwardIt2>
 void iter_swap(ForwardIt1 it1, ForwardIt2 it2)
 {
@@ -124,10 +114,10 @@ mystl::pair<ForwardIt, ForwardIt> equal_range(ForwardIt first, ForwardIt last, c
 namespace Detail
 {
     template<class RandomIt, class Compare>
-    void sift_down(RandomIt                                               first,
+    void sift_down(RandomIt                                                   first,
                    typename mystl::iterator_traits<RandomIt>::difference_type start,
                    typename mystl::iterator_traits<RandomIt>::difference_type size,
-                   Compare                                                comp)
+                   Compare                                                    comp)
     {
         const auto val  = *(first + start);
         auto       hole = start;
@@ -266,31 +256,6 @@ void sort_heap(RandomIt first, RandomIt last, Compare comp)
     }
 }
 
-// minmax
-template<class T>
-const T& min(const T& a, const T& b)
-{
-    return b < a ? b : a;
-}
-
-template<class T, class Compare>
-const T& min(const T& a, const T& b, Compare comp)
-{
-    return comp(b, a) ? b : a;
-}
-
-template<class T>
-const T& max(const T& a, const T& b)
-{
-    return a < b ? b : a;
-}
-
-template<class T, class Compare>
-const T& max(const T& a, const T& b, Compare comp)
-{
-    return comp(a, b) ? b : a;
-}
-
 template<class ForwardIt>
 ForwardIt min_element(ForwardIt first, ForwardIt last)
 {
@@ -390,6 +355,7 @@ mystl::pair<ForwardIt, ForwardIt> minmax_element(ForwardIt first, ForwardIt last
     return mystl::pair<ForwardIt, ForwardIt>(smallest, largest);
 }
 
+// search
 template<class InputIt, class T = typename mystl::iterator_traits<InputIt>::value_type>
 typename mystl::iterator_traits<InputIt>::difference_type
     count(InputIt first, InputIt last, const T& val)
@@ -422,34 +388,6 @@ typename mystl::iterator_traits<InputIt>::difference_type
     }
 
     return cnt;
-}
-
-template<class InputIt1, class InputIt2>
-bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
-{
-    for (; first1 != last1; ++first1, ++first2)
-    {
-        if (*first1 != *first2)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-template<class InputIt1, class InputIt2, class BinaryPred>
-bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPred p)
-{
-    for (; first1 != last1; ++first1, ++first2)
-    {
-        if (!p(*first1, *first2))
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 template<class InputIt, class T = typename mystl::iterator_traits<InputIt>::value_type>
