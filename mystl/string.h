@@ -1,7 +1,8 @@
 #pragma once
 
-#include "algorithm.h"
-
+#include "bits/stl_algobase.h"
+#include "mystl/types.h"
+#include <cstddef>
 #include <cstring>
 
 namespace mystl
@@ -150,6 +151,21 @@ public:
         }
     }
 
+    char& front()
+    {
+        return *this->data;
+    }
+
+    const char& front() const
+    {
+        return *this->data;
+    }
+
+    char& back()
+    {
+        return *(this->data + this->sz - 1);
+    }
+
     const char& back() const
     {
         return *(this->data + this->sz - 1);
@@ -165,22 +181,59 @@ public:
         return *(this->data + idx);
     }
 
-    bool operator==(const string& other) const
+    bool operator==(const mystl::string& other) const
     {
         if (other.sz != this->sz)
-        {
             return false;
-        }
 
         for (mystl::size_t idx = 0; idx < this->sz; ++idx)
-        {
-            if (*(this->data + idx) != other[idx])
-            {
+            if (this->data[idx] != other[idx])
                 return false;
-            }
-        }
 
         return true;
     }
+
+    bool operator<(const mystl::string& other) const
+    {
+        for (mystl::size_t i = 0; i < mystl::min(this->sz, other.sz); ++i)
+            if (this->data[i] < other[i])
+                return true;
+            else if (this->data[i] > other[i])
+                return false;
+
+        return this->sz < other.sz;
+    }
+
+    bool operator>(const mystl::string& other) const
+    {
+        return other < *this;
+    }
+
+    bool operator!=(const mystl::string& other) const
+    {
+        return !(*this == other);
+    }
+
+    bool operator<=(const mystl::string& other) const
+    {
+        return !(other < *this);
+    }
+
+    bool operator>=(const mystl::string& other) const
+    {
+        return !(*this < other);
+    }
 };
+
+inline int stoi(const mystl::string& str)
+{
+    bool is_neg = str[0] == '-';
+    int  res    = 0;
+    for (std::size_t idx = is_neg ? 1 : 0; idx < str.size(); ++idx)
+    {
+        res *= 10;
+        res += str[idx] - '0';
+    }
+    return is_neg ? -res : res;
+}
 } // namespace mystl
