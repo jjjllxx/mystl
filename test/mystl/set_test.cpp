@@ -55,35 +55,35 @@ GTEST_TEST(mystl_set, lower_bound)
     EXPECT_EQ(mystl_test::set::ST.lower_bound(100), mystl_test::set::ST.end());
 }
 
-GTEST_TEST(mystl, insert)
+GTEST_TEST(mystl_set, insert)
 {
     mystl::set<int> st{3, 0, 5};   
     EXPECT_FALSE(st.insert(3).second);
     EXPECT_EQ(*st.insert(1).first, 1);
 }
 
-GTEST_TEST(mystl, erase)
+GTEST_TEST(mystl_set, erase)
 {
     mystl::set<int> st { 3, 0, 5 };
     EXPECT_EQ(st.erase(3), 1);
     EXPECT_EQ(st.erase(1), 0);
 }
 
-GTEST_TEST(mystl, size)
+GTEST_TEST(mystl_set, size)
 {
     mystl::set<int> st { 3, 0, 5 };
     EXPECT_EQ(st.size(), 3);
     EXPECT_EQ(mystl_test::set::ST.size(), 10);
 }
 
-GTEST_TEST(mystl, empty)
+GTEST_TEST(mystl_set, empty)
 {
     mystl::set<int> st;
     EXPECT_TRUE(st.empty());
     EXPECT_FALSE(mystl_test::set::ST.empty());
 }
 
-GTEST_TEST(mystl, clear)
+GTEST_TEST(mystl_set, clear)
 {
     mystl::set<int> st { 3, 0, 5 };
     EXPECT_FALSE(st.empty());
