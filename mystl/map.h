@@ -40,13 +40,13 @@ public:
     map(const std::initializer_list<value_type>& init)
     {
         for (const value_type& vt : init)
-            _tree.insert(init);
+            _tree.insert(vt);
     }
 
     map& operator=(std::initializer_list<value_type>& init)
     {
         for (const value_type& vt : init)
-            _tree.insert(init);
+            _tree.insert(vt);
     }
 
     T& operator[](const Key& key)
