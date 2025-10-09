@@ -27,8 +27,8 @@ void swap(T& a, T& b)
 template<class T1, class T2>
 struct pair
 {
-    T1 first;
-    T2 second;
+    T1 first {};
+    T2 second {};
 
     pair() = default;
     pair(const T1& a, const T2& b) :
