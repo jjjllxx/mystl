@@ -1,4 +1,5 @@
 list(APPEND MYSTL_TEST_CPPS
+${CMAKE_CURRENT_LIST_DIR}/algorithm_test.cpp
 ${CMAKE_CURRENT_LIST_DIR}/array_test.cpp
 ${CMAKE_CURRENT_LIST_DIR}/bitset_test.cpp
 ${CMAKE_CURRENT_LIST_DIR}/deque_test.cpp
