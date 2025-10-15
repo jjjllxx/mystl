@@ -469,4 +469,81 @@ bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, I
 
     return first1 == last1 && first2 != last2;
 }
+// sort
+template<class InputIt1, class InputIt2, class OutputIt>
+OutputIt merge(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first)
+{
+    while (first1 != last1 && first2 != last2)
+    {
+        if (*first2 < *first1)
+        {
+            *d_first = *first2;
+            first2++;
+        }
+        else
+        {
+            *d_first = *first1;
+            first1++;
+        }
+
+        d_first++;
+    }
+
+    mystl::copy(first1, last1, d_first);
+    mystl::copy(first2, last2, d_first);
+
+    return d_first;
+}
+
+template<class InputIt1, class InputIt2, class OutputIt, class Compare>
+OutputIt merge(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
+{
+    while (first1 != last1 && first2 != last2)
+    {
+        if (comp(*first1, *first2))
+        {
+            *d_first = *first1;
+            first1++;
+        }
+        else
+        {
+            *d_first = *first2;
+            first2++;
+        }
+
+        d_first++;
+    }
+
+    mystl::copy(first1, last1, d_first);
+    mystl::copy(first2, last2, d_first);
+
+    return d_first;
+}
+
+template<class ForwardIt, class UnaryPredicate>
+ForwardIt partition(ForwardIt first, ForwardIt last, UnaryPredicate p)
+{
+    ForwardIt left  = first;
+    ForwardIt right = last - 1;
+
+    while (left <= right)
+    {
+        if (p(*left) == false && p(*right) == true)
+        {
+            mystl::swap(*left, *right);
+        }
+
+        while (p(*left) == true)
+        {
+            left++;
+        }
+
+        while (p(*right) == false)
+        {
+            right--;
+        }
+    }
+
+    return left;
+}
 } // namespace mystl
